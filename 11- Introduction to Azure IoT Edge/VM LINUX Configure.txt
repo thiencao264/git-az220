@@ -1,0 +1,94 @@
+Resource Group	rg-az220
+IoT Hub	iot-az220-training-00001
+
+
+
+
+#deploy an Ubuntu Server VM in the same region with Iot Hub
+-	Resource group: rg-az220vm
+-	VM name: vm-az220-training-edge0001-001
+-	Select the region where your Azure IoT Hub is provisioned.
+-	Leave Availability options set to No infrastructure redundancy required.
+-	Image: Ubuntu Server 18.04 LTS - Gen1
+-	Leave Azure Spot instance field unchecked.
+-	VM Size, click Standard_B1ms
+-	Administrator account/Password
+-	Inbound port rules are configured to enable inbound SSH access to the VM
+
+public IP: 13.67.76.14
+
+
+
+
+
+
+
+#Create an IoT Edge device identity in your IoT hub:
+az extension update --name azure-iot
+
+ 
+az iot hub device-identity create --hub-name iot-az220-testing-tma-0001 --device-id sensor-th-0067001 --edge-enabled
+
+#Get connection String:
+
+az iot hub device-identity connection-string show --device-id sensor-th-0067001 --hub-name iot-az220-testing-tma-0001
+
+
+
+
+ssh username@52.170.205.79
+
+
+ sudo su -
+
+ passwd
+
+curl https://packages.microsoft.com/config/ubuntu/18.04/multiarch/prod.list > ./microsoft-prod.list
+  
+cp ./microsoft-prod.list /etc/apt/sources.list.d/
+
+curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg
+cp ./microsoft.gpg /etc/apt/trusted.gpg.d/
+
+
+
+
+4.3	Install a container engine: Moby engine
+
+sudo apt-get update
+apt-get install moby-engine
+apt-get update
+
+
+#Install IotEdge
+  
+apt list -a iotedge
+
+
+sudo apt-get install iotedge=1.0.8-1 libiothsm-std=1.0.8-1
+1.1.1-1
+1.0.10.4-1
+sudo apt-get install iotedge=1.0.9-1 libiothsm-std=1.0.9-1
+
+iotedge version
+
+chmod a+w /etc/iotedge/config.yaml
+vi /etc/iotedge/config.yaml
+device_connection_string: "<ADD DEVICE CONNECTION STRING HERE>"
+
+systemctl restart iotedge
+
+
+systemctl status iotedge
+
+iotedge check
+
+
+iotedge check
+
+iotedge list
+
+=====================
+
+
+
